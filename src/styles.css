@@ -8,6 +8,8 @@
   --accent-600: #1f56bc;
   --accent-700: #173f92;
   --accent-light: #7aa7f5;
+  --whatsapp: #25d366;
+  --instagram: #d81b6a;
   --rule: rgba(242, 245, 250, 0.3);
   --hairline: rgba(242, 245, 250, 0.18);
   --font-display: 'Saira Condensed', 'Saira', system-ui, sans-serif;
@@ -109,6 +111,22 @@ a:hover { color: #a7c4fa; }
 .nav { display: flex; align-items: center; gap: 22px; font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; }
 .nav a { color: var(--ink); }
 .nav a:hover { color: var(--accent-light); }
+.header__actions { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+.social-icon {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--rule);
+  background: rgba(242, 245, 250, 0.04);
+  color: var(--ink);
+}
+.social-icon:hover { color: #fff; border-color: var(--accent-light); background: rgba(242, 245, 250, 0.1); }
+.social-icon--whatsapp { border-color: rgba(37, 211, 102, 0.48); color: #d9ffe6; background: rgba(37, 211, 102, 0.12); }
+.social-icon--whatsapp:hover { border-color: var(--whatsapp); background: rgba(37, 211, 102, 0.22); }
+.social-icon--instagram { border-color: rgba(216, 27, 106, 0.48); color: #ffd9e8; background: rgba(216, 27, 106, 0.13); }
+.social-icon--instagram:hover { border-color: var(--instagram); background: rgba(216, 27, 106, 0.24); }
 
 /* Hero */
 .hero {
@@ -137,6 +155,39 @@ a:hover { color: #a7c4fa; }
 }
 .hero p { margin: 24px 0 0; max-width: 52ch; font-size: 16.5px; line-height: 1.6; color: rgba(242, 245, 250, 0.78); text-wrap: pretty; }
 .hero__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.hero__socials {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  width: min(100%, 660px);
+  gap: 2px;
+  margin-top: 26px;
+  border: 2px solid var(--rule);
+  background: var(--rule);
+}
+.social-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding: 14px 16px;
+  background: rgba(5, 7, 12, 0.78);
+  color: var(--ink);
+}
+.social-card:hover { color: #fff; background: #0d1220; }
+.social-card__icon {
+  width: 39px;
+  height: 39px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border: 1px solid var(--hairline);
+}
+.social-card--whatsapp .social-card__icon { color: #d9ffe6; background: rgba(37, 211, 102, 0.14); border-color: rgba(37, 211, 102, 0.42); }
+.social-card--instagram .social-card__icon { color: #ffd9e8; background: rgba(216, 27, 106, 0.14); border-color: rgba(216, 27, 106, 0.42); }
+.social-card__text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.social-card__text strong { font-size: 14px; font-weight: 800; line-height: 1.1; color: #fff; }
+.social-card__text small { font-family: var(--font-mono); font-size: 10.5px; line-height: 1.4; color: var(--ink-62); overflow-wrap: anywhere; }
 .band { border-bottom: 2px solid var(--rule); }
 
 /* Logo banner + featured */
@@ -225,6 +276,23 @@ a:hover { color: #a7c4fa; }
 .card__name { font-size: 23px; font-weight: 700; letter-spacing: 0.01em; line-height: 1.05; min-height: 2.1em; }
 .card__specs { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; height: 150px; overflow: hidden; border-top: 1px solid var(--rule); }
 .card__specs li { padding: 8px 0; border-bottom: 1px solid var(--rule); font-family: var(--font-mono); font-size: 11px; line-height: 1.5; color: rgba(242, 245, 250, 0.78); }
+.card__quote {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: auto;
+  min-height: 40px;
+  padding: 10px 12px;
+  border: 1px solid rgba(37, 211, 102, 0.5);
+  background: rgba(37, 211, 102, 0.12);
+  color: #d9ffe6;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+}
+.card__quote:hover { color: #fff; border-color: var(--whatsapp); background: rgba(37, 211, 102, 0.22); }
 
 /* Lightbox */
 .lightbox {
@@ -270,6 +338,8 @@ a:hover { color: #a7c4fa; }
 .row { display: flex; gap: 18px; padding: 16px 0; border-bottom: 1px solid var(--rule); }
 .row__k { min-width: 100px; font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: rgba(242, 245, 250, 0.6); padding-top: 4px; }
 .row__v { font-size: 15px; line-height: 1.5; }
+.row__links { display: flex; flex-wrap: wrap; gap: 6px 9px; }
+.local__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
 .map { min-height: 420px; background: var(--panel); }
 .map iframe { width: 100%; height: 100%; min-height: 420px; border: 0; display: block; filter: grayscale(0.35) contrast(1.05); }
 
@@ -292,6 +362,19 @@ a:hover { color: #a7c4fa; }
   color: #fff;
 }
 .contact-row:hover { padding-left: 8px; color: #fff; }
+.contact-row__lead { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.contact-row__icon {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
+}
+.contact-row__icon--whatsapp { background: rgba(37, 211, 102, 0.22); }
+.contact-row__icon--instagram { background: rgba(216, 27, 106, 0.22); }
 .contact-row__text { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .contact-row__label { font-family: var(--font-mono); font-size: 9.5px; font-weight: 600; letter-spacing: 0.16em; }
 .contact-row__value { font-family: var(--font-display); font-size: clamp(24px, 2.6vw, 34px); font-weight: 800; letter-spacing: 0.01em; line-height: 1; }
@@ -300,10 +383,26 @@ a:hover { color: #a7c4fa; }
 .footer { display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 28px; padding: 38px 28px; border-top: 2px solid var(--rule); }
 .footer__name { font-family: var(--font-display); font-size: 22px; font-weight: 800; letter-spacing: 0.01em; }
 .footer__col { font-size: 12.5px; line-height: 1.7; color: var(--ink-62); }
+.footer__socials { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.footer__socials a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 9px;
+  border: 1px solid var(--hairline);
+  color: var(--ink);
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1;
+}
+.footer__socials a:hover { color: #fff; border-color: var(--accent-light); background: rgba(242, 245, 250, 0.07); }
 
 @media (max-width: 700px) {
   .header { gap: 14px; padding: 12px 18px; }
+  .header__actions { width: 100%; }
+  .header__actions .btn { flex: 1 1 168px; justify-content: center; }
   .hero { padding: 44px 18px 40px; }
+  .hero__socials { grid-template-columns: 1fr; }
   .catalog { padding: 40px 18px 12px; }
   .local__info, .cta__left, .cta__right { padding: 40px 18px; }
   .local__info { border-right: 0; border-bottom: 2px solid var(--rule); }
@@ -313,4 +412,6 @@ a:hover { color: #a7c4fa; }
   .featured__label { margin: 22px 18px 0; }
   .brands__head, .brandcard, .brands__also { padding-left: 18px; padding-right: 18px; }
   .stat { padding: 18px 18px; border-right: 0; border-bottom: 2px solid var(--rule); }
+  .contact-row__icon { width: 38px; height: 38px; }
+  .local__actions .btn { flex: 1 1 145px; justify-content: center; }
 }

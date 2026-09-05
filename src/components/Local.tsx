@@ -1,5 +1,5 @@
-import { site } from '../config';
-import { PinIcon } from './icons';
+import { site, waLink } from '../config';
+import { InstagramIcon, PinIcon, WhatsAppIcon } from './icons';
 
 export default function Local() {
   const embed =
@@ -29,7 +29,15 @@ export default function Local() {
           </div>
           <div className="row">
             <span className="row__k">WhatsApp</span>
-            <span className="row__v">(829) 898-7798 · (809) 776-2370</span>
+            <span className="row__v row__links">
+              <a href={waLink(site.whatsappPrimary)} target="_blank" rel="noopener noreferrer">
+                (829) 898-7798
+              </a>
+              <span>·</span>
+              <a href={waLink(site.whatsappSecondary)} target="_blank" rel="noopener noreferrer">
+                (809) 776-2370
+              </a>
+            </span>
           </div>
           <div className="row">
             <span className="row__k">Instagram</span>
@@ -40,16 +48,20 @@ export default function Local() {
             </span>
           </div>
         </div>
-        <a
-          className="btn btn--ghost"
-          style={{ marginTop: 28 }}
-          href={site.mapsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <PinIcon />
-          Abrir en Google Maps
-        </a>
+        <div className="local__actions">
+          <a className="btn btn--primary" href={waLink()} target="_blank" rel="noopener noreferrer">
+            <WhatsAppIcon />
+            WhatsApp
+          </a>
+          <a className="btn btn--ghost" href={site.instagramUrl} target="_blank" rel="noopener noreferrer">
+            <InstagramIcon />
+            Instagram
+          </a>
+          <a className="btn btn--ghost" href={site.mapsUrl} target="_blank" rel="noopener noreferrer">
+            <PinIcon />
+            Google Maps
+          </a>
+        </div>
       </div>
       <div className="map">
         <iframe

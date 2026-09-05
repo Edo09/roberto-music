@@ -1,5 +1,5 @@
-import { waLink } from '../config';
-import { ArrowDownIcon, WhatsAppIcon } from './icons';
+import { site, waLink } from '../config';
+import { ArrowDownIcon, InstagramIcon, WhatsAppIcon } from './icons';
 
 export default function Hero() {
   return (
@@ -18,6 +18,36 @@ export default function Hero() {
         <a className="btn btn--ghost" href="#catalogo">
           Ver catálogo
           <ArrowDownIcon />
+        </a>
+      </div>
+      <div className="hero__socials" aria-label="Canales sociales de Roberto Music">
+        <a
+          className="social-card social-card--whatsapp"
+          href={waLink()}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span className="social-card__icon">
+            <WhatsAppIcon size={20} />
+          </span>
+          <span className="social-card__text">
+            <strong>WhatsApp ventas</strong>
+            <small>(829) 898-7798 · (809) 776-2370</small>
+          </span>
+        </a>
+        <a
+          className="social-card social-card--instagram"
+          href={site.instagramUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span className="social-card__icon">
+            <InstagramIcon size={20} />
+          </span>
+          <span className="social-card__text">
+            <strong>Síguenos en Instagram</strong>
+            <small>{site.instagram}</small>
+          </span>
         </a>
       </div>
     </div>

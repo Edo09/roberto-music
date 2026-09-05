@@ -1,5 +1,6 @@
 import type { Product } from '../data/products';
-import { ExpandIcon } from './icons';
+import { waLink } from '../config';
+import { ExpandIcon, WhatsAppIcon } from './icons';
 
 interface Props {
   product: Product;
@@ -32,6 +33,15 @@ export default function ProductCard({ product, onOpen }: Props) {
             <li key={spec}>{spec}</li>
           ))}
         </ul>
+        <a
+          className="card__quote"
+          href={waLink(undefined, 'Hola Roberto Music, me interesa el ' + product.name + '.')}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <WhatsAppIcon size={15} />
+          Cotizar por WhatsApp
+        </a>
       </div>
     </article>
   );

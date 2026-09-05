@@ -1,4 +1,5 @@
-import { site } from '../config';
+import { site, waLink } from '../config';
+import { InstagramIcon, WhatsAppIcon } from './icons';
 
 export default function Footer() {
   return (
@@ -18,6 +19,16 @@ export default function Footer() {
         <a href={site.instagramUrl} target="_blank" rel="noopener noreferrer">
           {site.instagram}
         </a>
+        <div className="footer__socials" aria-label="Redes sociales">
+          <a href={waLink()} target="_blank" rel="noopener noreferrer">
+            <WhatsAppIcon size={15} />
+            WhatsApp
+          </a>
+          <a href={site.instagramUrl} target="_blank" rel="noopener noreferrer">
+            <InstagramIcon size={15} />
+            Instagram
+          </a>
+        </div>
       </div>
       <div className="footer__col">
         Distribuidor autorizado
