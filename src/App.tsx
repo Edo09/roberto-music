@@ -17,8 +17,9 @@ export default function App() {
         <Featured />
       </section>
       <Stats />
-      <Catalog />
       <Brands />
+
+      <Catalog />
       <Local />
       <ContactBanner />
       <Footer />
