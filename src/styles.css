@@ -90,6 +90,7 @@ a:hover { color: #a7c4fa; }
   flex-wrap: wrap;
   padding: 14px 28px;
   background: rgba(10, 12, 18, 0.92);
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   border-bottom: 2px solid var(--rule);
   box-shadow: 0 2px 0 rgba(122, 167, 245, 0.22);
