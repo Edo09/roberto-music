@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { site, waLink } from '../config';
 import { ArrowUpRightIcon, InstagramIcon, WhatsAppIcon } from './icons';
 
@@ -9,8 +10,8 @@ const ROWS = [
 
 export default function ContactBanner() {
   return (
-    <section className="cta">
-      <div className="cta__left">
+    <section className="cta" data-track-context="cta">
+      <div className="cta__left" data-reveal>
         <span className="kicker">Asesoría y venta por WhatsApp</span>
         <h2>¿Buscas un equipo? Escríbenos.</h2>
         <p>
@@ -28,10 +29,14 @@ export default function ContactBanner() {
           Contáctanos ahora
         </a>
       </div>
-      <div className="cta__right">
+      <div className="cta__right" data-reveal-grid="plain">
         <span className="kicker">Escríbenos directo</span>
-        {ROWS.map((r) => (
-          <a className="contact-row" key={r.label} href={r.href} target="_blank" rel="noopener noreferrer">
+        {ROWS.map((r, i) => (
+          <a
+            className="contact-row"
+            key={r.label}
+            style={{ '--i': i + 1 } as CSSProperties}
+            href={r.href} target="_blank" rel="noopener noreferrer">
             <span className="contact-row__lead">
               <span className={'contact-row__icon contact-row__icon--' + r.kind}>
                 {r.kind === 'whatsapp' ? <WhatsAppIcon size={19} /> : <InstagramIcon size={19} />}

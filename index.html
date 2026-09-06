@@ -3,11 +3,84 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Roberto Music · Lighting &amp; Sound — Santo Domingo</title>
-    <meta name="description" content="Iluminación, sonido y efectos para tarima, discoteca y evento. Cabezas móviles, beams, PAR LED, láseres, humo, bocinas y consolas. Venta en Ensanche Espaillat, Santo Domingo." />
+
+    <title>Roberto Music · Lighting &amp; Sound — Iluminación y sonido en Santo Domingo</title>
+    <meta name="description" content="Iluminación, sonido y efectos para tarima, discoteca y evento. Cabezas móviles, beams, PAR LED, láseres, humo, bocinas y consolas. Venta directa en Ensanche Espaillat, Santo Domingo." />
+    <link rel="canonical" href="%VITE_SITE_URL%/" />
+    <meta name="theme-color" content="#0a0c12" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Vista previa al compartir el enlace por WhatsApp, Instagram o Facebook. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Roberto Music" />
+    <meta property="og:locale" content="es_DO" />
+    <meta property="og:title" content="Roberto Music · Lighting &amp; Sound" />
+    <meta property="og:description" content="Cabezas móviles, beams, PAR LED, láseres, humo, bocinas y consolas. Venta directa en Ensanche Espaillat, Santo Domingo." />
+    <meta property="og:url" content="%VITE_SITE_URL%/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Roberto Music — Lighting &amp; Sound" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Roberto Music · Lighting &amp; Sound" />
+    <meta name="twitter:description" content="Iluminación, sonido y efectos para tarima, discoteca y evento. Santo Domingo." />
+    <meta name="twitter:image" content="%VITE_SITE_URL%/og-image.jpg" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800&family=Saira:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" />
+
+    <!-- Datos estructurados: es lo que pone la tienda en el mapa y el panel
+         lateral de Google con dirección, horario y teléfono. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Store",
+        "name": "Roberto Music",
+        "alternateName": "Roberto Music Lighting & Sound",
+        "description": "Venta de iluminación, sonido y efectos para tarima, discoteca y evento en Santo Domingo.",
+        "url": "%VITE_SITE_URL%/",
+        "image": "%VITE_SITE_URL%/og-image.jpg",
+        "logo": "%VITE_SITE_URL%/assets/logo-roberto-music.jpeg",
+        "telephone": "+18298987798",
+        "priceRange": "$$",
+        "currenciesAccepted": "DOP",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Calle José Nicolás Casimiro #87, Ensanche Espaillat",
+          "addressLocality": "Santo Domingo",
+          "addressRegion": "Distrito Nacional",
+          "addressCountry": "DO"
+        },
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "opens": "08:00",
+            "closes": "18:00"
+          },
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": "Saturday",
+            "opens": "08:00",
+            "closes": "15:00"
+          }
+        ],
+        "hasMap": "https://maps.app.goo.gl/9yzUx5QYpnQV7LJE7",
+        "areaServed": "Santo Domingo, República Dominicana",
+        "sameAs": ["https://www.instagram.com/Robertomusic02"]
+      }
+    </script>
+
+    <script>
+      /* Solo escondemos el contenido para animarlo si hay JS y el usuario no pidió menos movimiento. */
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('js-reveal');
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

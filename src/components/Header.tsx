@@ -1,9 +1,14 @@
+import { useRef } from 'react';
 import { site, waLink } from '../config';
 import { InstagramIcon, WhatsAppIcon } from './icons';
+import useHeaderHeight from '../hooks/useHeaderHeight';
 
 export default function Header() {
+  const ref = useRef<HTMLElement>(null);
+  useHeaderHeight(ref);
+
   return (
-    <header className="header">
+    <header className="header" ref={ref} data-track-context="header">
       <div className="brandmark">
         <span className="brandmark__name">Roberto Music</span>
         <span className="brandmark__sub">{site.tagline}</span>
@@ -39,6 +44,7 @@ export default function Header() {
           Contáctanos
         </a>
       </div>
+      <span className="header__progress" aria-hidden="true" />
     </header>
   );
 }

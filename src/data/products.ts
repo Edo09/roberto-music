@@ -19,6 +19,21 @@ export const categories: { key: Category; label: string }[] = [
   { key: 'soportes', label: 'Soportes y accesorios' },
 ];
 
+/**
+ * Disponibilidad mostrada en la ficha. Por defecto se asume 'disponible',
+ * coherente con lo que ya afirma la página ("Equipos disponibles", "venta
+ * directa en el local"). Para marcar un equipo que no está en el local,
+ * agrégale `stock:'pedido'` a su entrada de abajo.
+ */
+export type Stock = 'disponible' | 'pedido';
+
+export const DEFAULT_STOCK: Stock = 'disponible';
+
+export const STOCK_LABEL: Record<Stock, string> = {
+  disponible: 'En stock',
+  pedido: 'Bajo pedido',
+};
+
 export interface Product {
   id: string;
   name: string;
@@ -27,6 +42,10 @@ export interface Product {
   featured: boolean;
   img: string;
   specs: [string, string, string];
+  /** Omitido = DEFAULT_STOCK. */
+  stock?: Stock;
+  /** Opcional. Si lo pones (ej. 'RD$ 18,500'), se muestra en la ficha. */
+  price?: string;
 }
 
 export const products: Product[] = [
@@ -119,3 +138,19 @@ export const products: Product[] = [
 ];
 
 export const featured = products.filter((p) => p.featured);
+
+/** Quita acentos y pasa a minúsculas, para que "laser" encuentre "láser". */
+export function normalize(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
+/** Texto buscable por producto: nombre, marca, categoría y especificaciones. */
+export const searchIndex = new Map<string, string>(
+  products.map((p) => {
+    const cat = categories.find((c) => c.key === p.cat)?.label ?? '';
+    return [p.id, normalize([p.name, p.brand, cat, ...p.specs].join(' '))];
+  }),
+);

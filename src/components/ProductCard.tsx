@@ -1,23 +1,29 @@
-import type { Product } from '../data/products';
+import type { CSSProperties } from 'react';
+import { DEFAULT_STOCK, STOCK_LABEL, type Product } from '../data/products';
 import { waLink } from '../config';
 import { ExpandIcon, WhatsAppIcon } from './icons';
+import Media from './Media';
 
 interface Props {
   product: Product;
-  onOpen: (product: Product) => void;
+  index: number;
+  sizes: string;
+  onOpen: () => void;
 }
 
-export default function ProductCard({ product, onOpen }: Props) {
+export default function ProductCard({ product, index, sizes, onOpen }: Props) {
+  const stock = product.stock ?? DEFAULT_STOCK;
+
   return (
-    <article className="card">
+    <article className="card" style={{ '--i': index } as CSSProperties}>
       <button
         type="button"
         className="card__imgbtn"
-        onClick={() => onOpen(product)}
+        onClick={onOpen}
         aria-label={'Ver ficha de ' + product.name}
       >
         <span className="frame">
-          <img src={product.img} alt={product.name} loading="lazy" />
+          <Media src={product.img} alt={product.name} sizes={sizes} loading="lazy" />
         </span>
         <span className="card__flag">
           <ExpandIcon />
@@ -33,11 +39,16 @@ export default function ProductCard({ product, onOpen }: Props) {
             <li key={spec}>{spec}</li>
           ))}
         </ul>
+        <div className="card__foot">
+          <span className={'stock stock--' + stock}>{STOCK_LABEL[stock]}</span>
+          <span className="card__price">{product.price ?? 'Precio por WhatsApp'}</span>
+        </div>
         <a
           className="card__quote"
           href={waLink(undefined, 'Hola Roberto Music, me interesa el ' + product.name + '.')}
           target="_blank"
           rel="noopener noreferrer"
+          data-track-item={product.name}
         >
           <WhatsAppIcon size={15} />
           Cotizar por WhatsApp

@@ -1,16 +1,25 @@
+import type { CSSProperties } from 'react';
 import { site, waLink } from '../config';
 import { ArrowDownIcon, InstagramIcon, WhatsAppIcon } from './icons';
 
+/* El hero está siempre visible al cargar, así que entra con una animación CSS
+   escalonada en lugar de esperar al IntersectionObserver. */
+const step = (i: number) => ({ '--i': i }) as CSSProperties;
+
 export default function Hero() {
   return (
-    <div className="hero">
-      <span className="kicker">Santo Domingo · Ensanche Espaillat</span>
-      <h1>Iluminación, sonido y efectos para tarima, discoteca y evento.</h1>
-      <p>
+    <div className="hero" data-track-context="hero">
+      <span className="kicker" data-enter style={step(0)}>
+        Santo Domingo · Ensanche Espaillat
+      </span>
+      <h1 data-enter style={step(1)}>
+        Iluminación, sonido y efectos para tarima, discoteca y evento.
+      </h1>
+      <p data-enter style={step(2)}>
         Cabezas móviles, beams, PAR LED, barras, strobos, láseres, máquinas de humo, fuego y confeti,
         bocinas activas y consolas. Equipo profesional, calidad comprobada y venta directa en el local.
       </p>
-      <div className="hero__actions">
+      <div className="hero__actions" data-enter style={step(3)}>
         <a className="btn btn--primary" href={waLink()} target="_blank" rel="noopener noreferrer">
           <WhatsAppIcon />
           Contáctanos por WhatsApp
@@ -20,7 +29,7 @@ export default function Hero() {
           <ArrowDownIcon />
         </a>
       </div>
-      <div className="hero__socials" aria-label="Canales sociales de Roberto Music">
+      <div className="hero__socials" data-enter style={step(4)} aria-label="Canales sociales de Roberto Music">
         <a
           className="social-card social-card--whatsapp"
           href={waLink()}

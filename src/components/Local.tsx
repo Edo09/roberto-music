@@ -6,8 +6,8 @@ export default function Local() {
     'https://www.google.com/maps?q=' + encodeURIComponent(site.mapsQuery) + '&output=embed';
 
   return (
-    <section className="local" id="local">
-      <div className="local__info">
+    <section className="local" id="local" data-track-context="local">
+      <div className="local__info" data-reveal>
         <span className="kicker">Venta en el local</span>
         <h2>Visítanos en Ensanche Espaillat</h2>
         <div className="rows">
@@ -63,7 +63,7 @@ export default function Local() {
           </a>
         </div>
       </div>
-      <div className="map">
+      <div className="map" data-reveal="scale">
         <iframe
           title="Ubicación de Roberto Music"
           src={embed}
