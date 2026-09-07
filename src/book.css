@@ -351,6 +351,133 @@
   color: var(--accent-700);
 }
 
+/* --- Rejilla de equipos ---------------------------------------------------- */
+
+/* Cuatro por hoja. Las tarjetas se estiran para llenar la página: la foto se
+   queda con lo que sobre después del nombre, así todas las hojas cierran a la
+   misma altura sin importar cuántos equipos lleven. */
+.leaf__grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 14px;
+  gap: 3.6cqw;
+  margin: 14px 0 0;
+  margin: 3.6cqw 0 0;
+  padding: 0;
+  list-style: none;
+}
+/* Dos equipos: uno al lado del otro, de arriba abajo. Tres: el primero se lleva
+   la columna entera. En ambos casos la foto conserva su forma vertical, que es
+   la de los flyers; una tarjeta ancha y baja los recortaría mal. */
+.leaf__grid--2 { grid-template-rows: 1fr; }
+.leaf__grid--3 > :first-child { grid-row: span 2; }
+
+.gcard { display: flex; min-height: 0; }
+.gcard__btn {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: zoom-in;
+}
+.gcard__frame {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  line-height: 0;
+  background:
+    radial-gradient(120% 78% at 50% 0%, rgba(47, 107, 216, 0.24), transparent 66%),
+    radial-gradient(100% 70% at 50% 100%, rgba(216, 27, 106, 0.16), transparent 68%),
+    #05070c;
+}
+.gcard__frame img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+/* Las tarjetas altas —las dos de una hoja de dos, y la primera de una de tres—
+   recortarían el flyer por los lados. Ahí se ve entero, centrado sobre la placa
+   oscura; los flyers ya vienen con fondo negro, así que no se nota el encaje. */
+.leaf__grid--2 .gcard__frame img,
+.leaf__grid--3 > :first-child .gcard__frame img { object-fit: contain; object-position: center; }
+.gcard__badge {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 3px 6px;
+  padding: 0.9cqw 1.5cqw;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-size: max(7px, 1.8cqw);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+/* La lupa avisa de que la foto abre la ficha completa: en el celular no hay
+   hover que lo insinúe. */
+.gcard__zoom {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  padding: 4px 5px;
+  padding: 1.1cqw 1.4cqw;
+  background: rgba(5, 7, 12, 0.85);
+  color: var(--accent-light);
+  line-height: 0;
+}
+.gcard__btn:hover .gcard__zoom { color: #fff; background: var(--accent); }
+.gcard__name {
+  margin-top: 8px;
+  margin-top: 2.2cqw;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-size: max(11px, 3.4cqw);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  /* Dos líneas como máximo: los nombres largos no pueden empujar la foto. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+.gcard__btn:hover .gcard__name { color: var(--accent-700); }
+.gcard__foot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  gap: 1.6cqw;
+  margin-top: 5px;
+  margin-top: 1.4cqw;
+}
+.gcard .stock {
+  padding: 3px 6px;
+  padding: 0.9cqw 1.5cqw;
+  font-size: 8px;
+  font-size: max(7.5px, 1.9cqw);
+  letter-spacing: 0.1em;
+}
+.gcard .stock::before { width: 4px; height: 4px; }
+.gcard__price {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-size: max(7.5px, 1.9cqw);
+  font-weight: 600;
+  color: var(--paper-soft);
+}
+
 /* --- Ficha de equipo ------------------------------------------------------ */
 
 .leaf__head {

@@ -48,7 +48,8 @@ src/components/           Header, Hero, Featured, Stats, Catalog, ProductCard,
 ## El catálogo virtual
 
 - **La revista** (`FlipBook`) usa [StPageFlip](https://github.com/Nodlik/StPageFlip) (`page-flip`) para el giro de hoja: se arrastra la esquina, se desliza con el dedo y en pantallas angostas cae a una sola página. Se monta dos veces con el mismo componente — dentro de la landing y a pantalla completa en `/revista/`.
-- **Las hojas** (`BookLeaf`) salen de `products.ts`: no hay nada que mantener aparte. Un producto nuevo entra solo en su sección, y el índice y los folios se recalculan.
+- **Las hojas** (`BookLeaf`) salen de `products.ts`: no hay nada que mantener aparte. Un producto nuevo entra solo en su sección, y el índice, los folios y el reparto se recalculan.
+- **Cuatro equipos por hoja**, repartidos parejo dentro de cada sección (`catalogBook.ts`): 5 equipos salen 3 + 2 y no 4 + 1, para que ninguna hoja quede con uno suelto. La sección que sí termina con uno solo le da la página entera, con sus especificaciones. Se toca un equipo y se abre su flyer completo en el lightbox.
 - **El papel es claro a propósito**: las sombras del pliegue solo se leen sobre una hoja clara, y son ellas las que hacen que el giro parezca de verdad.
 - **El tamaño del texto de las hojas va en `cqw`** (container queries), porque el widget redimensiona la página en píxeles según la pantalla.
 

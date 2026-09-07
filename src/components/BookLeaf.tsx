@@ -1,6 +1,5 @@
-import { DEFAULT_STOCK, STOCK_LABEL } from '../data/products';
+import { DEFAULT_STOCK, STOCK_LABEL, categories, type Product } from '../data/products';
 import { bookSections, folio, type BookPage } from '../data/catalogBook';
-import { categories } from '../data/products';
 import { site, waLink } from '../config';
 import { SIZES } from '../lib/images';
 import { ExpandIcon, InstagramIcon, PinIcon, WhatsAppIcon } from './icons';
@@ -11,15 +10,12 @@ interface Props {
   index: number;
 }
 
-/** Las primeras hojas se cargan de una; el resto espera a que el libro las abra. */
-const EAGER_UNTIL = 4;
-
 const CATEGORY_LABEL = new Map(categories.map((c) => [c.key, c.label]));
 
 /**
  * Una hoja del catálogo virtual. El elemento raíz es el que StPageFlip toma
  * como página (le añade `.stf__item` y le fija tamaño y transform), así que
- * todo el diseño vive en el `.page` de dentro: así el widget mueve la hoja y
+ * todo el diseño vive en el `.leaf` de dentro: así el widget mueve la hoja y
  * nosotros mandamos en el contenido.
  *
  * `data-density="hard"` marca las tapas: se pasan rígidas, como cartón.
@@ -67,8 +63,7 @@ export default function BookLeaf({ page, index }: Props) {
             ))}
           </ul>
           <p className="leaf__note">
-            Toca cualquier foto para ver la ficha en grande, o cotiza el equipo por WhatsApp
-            desde su propia página.
+            Toca cualquier equipo para ver su ficha completa en grande y cotizarlo por WhatsApp.
           </p>
           <span className="leaf__folio">{folio(index)}</span>
         </div>
@@ -76,61 +71,34 @@ export default function BookLeaf({ page, index }: Props) {
     );
   }
 
-  if (page.kind === 'product') {
-    const { product } = page;
-    const stock = product.stock ?? DEFAULT_STOCK;
+  if (page.kind === 'products') {
+    const label = CATEGORY_LABEL.get(page.cat);
+
+    /* Una sección puede terminar con un equipo suelto. En vez de dejar la hoja
+       con una tarjeta y tres huecos, ese equipo se lleva la página entera —con
+       sus especificaciones—, como el destacado de una revista. */
+    if (page.items.length === 1) {
+      return (
+        <div className="bookpage" data-density="soft">
+          <FullLeaf product={page.items[0]} label={label} index={index} />
+        </div>
+      );
+    }
 
     return (
       <div className="bookpage" data-density="soft">
-        <article className="leaf leaf--product">
+        <section className="leaf leaf--grid">
           <header className="leaf__head">
-            <span className="leaf__cat">{CATEGORY_LABEL.get(page.cat)}</span>
+            <span className="leaf__cat">{label}</span>
             <span className="leaf__folio">{folio(index)}</span>
           </header>
 
-          <button
-            type="button"
-            className="leaf__figure"
-            data-book-zoom={product.id}
-            aria-label={'Ver ficha de ' + product.name}
-          >
-            <Media
-              src={product.img}
-              alt={product.name}
-              sizes={SIZES.card}
-              loading={index <= EAGER_UNTIL ? 'eager' : 'lazy'}
-            />
-            {product.featured && <span className="leaf__badge">Destacado</span>}
-            <span className="leaf__zoom">
-              <ExpandIcon />
-              Ver ficha
-            </span>
-          </button>
-
-          <span className="leaf__brand-tag">{product.brand}</span>
-          <h3 className="leaf__name">{product.name}</h3>
-          <ul className="leaf__specs">
-            {product.specs.map((spec) => (
-              <li key={spec}>{spec}</li>
+          <ul className={'leaf__grid leaf__grid--' + page.items.length}>
+            {page.items.map((product) => (
+              <GridCard key={product.id} product={product} />
             ))}
           </ul>
-
-          <div className="leaf__foot">
-            <span className={'stock stock--' + stock}>{STOCK_LABEL[stock]}</span>
-            <span className="leaf__price">{product.price ?? 'Precio por WhatsApp'}</span>
-          </div>
-
-          <a
-            className="leaf__quote"
-            href={waLink(undefined, 'Hola Roberto Music, me interesa el ' + product.name + '.')}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-track-item={product.name}
-          >
-            <WhatsAppIcon size={14} />
-            Cotizar por WhatsApp
-          </a>
-        </article>
+        </section>
       </div>
     );
   }
@@ -187,5 +155,104 @@ export default function BookLeaf({ page, index }: Props) {
         <span className="leaf__hint">Roberto Music · {site.tagline}</span>
       </div>
     </div>
+  );
+}
+
+/** Tarjeta de la rejilla: la foto manda, y el resto de la ficha está a un toque. */
+function GridCard({ product }: { product: Product }) {
+  const stock = product.stock ?? DEFAULT_STOCK;
+
+  return (
+    <li className="gcard">
+      <button
+        type="button"
+        className="gcard__btn"
+        data-book-zoom={product.id}
+        aria-label={'Ver ficha de ' + product.name}
+      >
+        <span className="gcard__frame">
+          <Media
+            src={product.img}
+            alt={product.name}
+            sizes={SIZES.featured}
+            loading="lazy"
+          />
+          {product.featured && <span className="gcard__badge">Destacado</span>}
+          <span className="gcard__zoom">
+            <ExpandIcon size={9} />
+          </span>
+        </span>
+        <span className="gcard__name">{product.name}</span>
+        <span className="gcard__foot">
+          <span className={'stock stock--' + stock}>{STOCK_LABEL[stock]}</span>
+          {product.price && <span className="gcard__price">{product.price}</span>}
+        </span>
+      </button>
+    </li>
+  );
+}
+
+/** Hoja de un solo equipo: la ficha completa, con especificaciones y cotización. */
+function FullLeaf({
+  product,
+  label,
+  index,
+}: {
+  product: Product;
+  label?: string;
+  index: number;
+}) {
+  const stock = product.stock ?? DEFAULT_STOCK;
+
+  return (
+    <article className="leaf leaf--product">
+      <header className="leaf__head">
+        <span className="leaf__cat">{label}</span>
+        <span className="leaf__folio">{folio(index)}</span>
+      </header>
+
+      <button
+        type="button"
+        className="leaf__figure"
+        data-book-zoom={product.id}
+        aria-label={'Ver ficha de ' + product.name}
+      >
+        <Media
+          src={product.img}
+          alt={product.name}
+          sizes={SIZES.card}
+          loading="lazy"
+        />
+        {product.featured && <span className="leaf__badge">Destacado</span>}
+        <span className="leaf__zoom">
+          <ExpandIcon />
+          Ver ficha
+        </span>
+      </button>
+
+      <span className="leaf__brand-tag">{product.brand}</span>
+      <h3 className="leaf__name">{product.name}</h3>
+      <ul className="leaf__specs">
+        {product.specs.map((spec) => (
+          <li key={spec}>{spec}</li>
+        ))}
+      </ul>
+
+      <div className="leaf__foot">
+        <span className={'stock stock--' + stock}>{STOCK_LABEL[stock]}</span>
+        <span className="leaf__price">{product.price ?? 'Precio por WhatsApp'}</span>
+      </div>
+
+      <a
+        className="leaf__quote"
+        href={waLink(undefined, 'Hola Roberto Music, me interesa el ' + product.name + '.')}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-track-item={product.name}
+      >
+        <WhatsAppIcon size={14} />
+        Cotizar por WhatsApp
+      </a>
+    </article>
   );
 }

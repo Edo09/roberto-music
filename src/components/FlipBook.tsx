@@ -98,8 +98,26 @@ export default function FlipBook({ fill = false, apiRef }: Props) {
       swipeDistance: 30,
     });
 
+    /* Las fotos de las hojas se cargan en diferido: son 43 flyers y casi nadie
+       llega al final. Pero una hoja escondida nunca dispara su carga, así que
+       al pasar página se adelantan las siguientes — cuando el lector llega,
+       la foto ya está. */
+    const warm = (from: number) => {
+      for (let i = Math.max(0, from); i < Math.min(from + 4, leaves.length); i++) {
+        leaves[i]
+          .querySelectorAll<HTMLImageElement>('img[loading="lazy"]')
+          .forEach((img) => {
+            img.loading = 'eager';
+          });
+      }
+    };
+
     flip.on('flip', (e) => {
       setPage(e.data);
+      /* Desde la hoja actual, no desde la siguiente: al saltar de sección se
+         cae en una hoja que nunca estuvo a la vista y sus fotos no han pedido
+         nada todavía. */
+      warm(e.data);
       track('book_flip', { page: e.data });
     });
     flip.on('changeOrientation', (e) => setPortrait(e.data === 'portrait'));
@@ -109,6 +127,7 @@ export default function FlipBook({ fill = false, apiRef }: Props) {
     });
 
     flip.loadFromHTML(leaves);
+    warm(0);
     flipRef.current = flip;
 
     return () => {
@@ -117,6 +136,17 @@ export default function FlipBook({ fill = false, apiRef }: Props) {
       flip.destroy();
     };
   }, [fill]);
+
+  /* Saltar de sección. StPageFlip anima el salto colocándose una hoja antes y
+     pasando página; en una sola página (móvil) esa animación a veces no arranca
+     —la hoja destino todavía no está dibujada— y el libro se queda justo antes.
+     Ahí el salto va seco, que siempre cae donde debe. */
+  const jump = useCallback((to: number) => {
+    const flip = flipRef.current;
+    if (!flip) return;
+    if (flip.getOrientation() === 'portrait') flip.turnToPage(to);
+    else flip.flip(to);
+  }, []);
 
   /* Un solo listener delegado en el contenedor: las hojas cambian de sitio y
      la librería llega a clonarlas a mitad de giro, así que atarse a cada nodo
@@ -136,12 +166,12 @@ export default function FlipBook({ fill = false, apiRef }: Props) {
       }
 
       const goto = target?.closest<HTMLElement>('[data-book-goto]');
-      if (goto) flipRef.current?.flip(Number(goto.dataset.bookGoto));
+      if (goto) jump(Number(goto.dataset.bookGoto));
     };
 
     host.addEventListener('click', onClick);
     return () => host.removeEventListener('click', onClick);
-  }, [open]);
+  }, [open, jump]);
 
   const step = useCallback((delta: number) => {
     const flip = flipRef.current;
@@ -152,11 +182,11 @@ export default function FlipBook({ fill = false, apiRef }: Props) {
 
   useEffect(() => {
     if (!apiRef) return;
-    apiRef.current = { flip: (to) => flipRef.current?.flip(to), step };
+    apiRef.current = { flip: jump, step };
     return () => {
       apiRef.current = null;
     };
-  }, [apiRef, step]);
+  }, [apiRef, jump, step]);
 
   const onKeyDown = (e: ReactKeyboardEvent) => {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
