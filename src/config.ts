@@ -31,6 +31,20 @@ export const site: SiteConfig = {
   distributor: 'Ferreherramientas Ventura',
 };
 
+/**
+ * La revista a pantalla completa. Es una página aparte (`revista/index.html`),
+ * no un ancla: así el enlace que se manda por WhatsApp abre solo el catálogo,
+ * sin el resto de la web. La barra final importa — en el `dist` es un
+ * directorio, y sin ella algunos servidores redirigen antes de servirla.
+ */
+export const READER_PATH = '/revista/';
+
+/** Mensaje con el que se comparte la revista. */
+export const READER_SHARE = {
+  title: 'Catálogo Roberto Music',
+  text: 'Catálogo de iluminación, sonido y efectos de Roberto Music, Santo Domingo.',
+};
+
 export function waLink(number: string = site.whatsappPrimary, message: string = site.whatsappMessage): string {
   return 'https://wa.me/' + number.replace(/[^0-9]/g, '') + '?text=' + encodeURIComponent(message);
 }

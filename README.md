@@ -11,16 +11,30 @@ npm run build    # compila TS y genera dist/
 npm run preview  # sirve dist/
 ```
 
+## Las dos páginas
+
+| Página | Archivo | Para qué |
+|---|---|---|
+| Landing | `index.html` | La web completa: hero, destacados, revista, catálogo con buscador, local |
+| Revista | `revista/index.html` → **`/revista/`** | Solo el catálogo virtual, a pantalla completa. **Es el enlace que se comparte por WhatsApp** |
+
+Las dos salen del mismo código (`build.rollupOptions.input` en `vite.config.ts`) y comparten fichas, lightbox y estilos. Al publicar, `dist/revista/index.html` queda en la URL `https://tu-dominio/revista/` — con la barra final, porque es un directorio.
+
 ## Estructura
 
 ```
 public/assets/            Flyers de producto, logo y marcas (46 imágenes)
 src/config.ts             Datos del negocio: WhatsApp, dirección, horario, Instagram
 src/data/products.ts      Catálogo tipado: Product, Category, 43 productos
+src/data/catalogBook.ts   Guion de la revista: orden de las hojas y el índice
 src/styles.css            Tokens (variables CSS) y clases de componentes
-src/App.tsx               Composición de la página
+src/book.css              El libro y el papel de las hojas
+src/reader.css            La página de la revista a pantalla completa
+src/App.tsx               Composición de la landing
+src/revista.tsx           Entrada de la revista
 src/components/           Header, Hero, Featured, Stats, Catalog, ProductCard,
-                          FlyerLightbox, Brands, Local, ContactBanner, Footer, icons
+                          FlyerLightbox, Brands, Local, ContactBanner, Footer, icons,
+                          FlipBook, BookLeaf, CatalogBook, CatalogReader
 ```
 
 ## Cómo editar el contenido
@@ -30,6 +44,13 @@ src/components/           Header, Hero, Featured, Stats, Catalog, ProductCard,
 - **Categorías** → arreglo `categories` y unión `Category` en el mismo archivo. Los filtros y el contador de la barra de datos se calculan solos.
 - **Destacados** → `featured: true`; aparecen en "Lo más vendido" (etiqueta corta en `META` de `Featured.tsx`).
 - **Colores y tipografía** → variables en `:root` de `src/styles.css`. Las fuentes (Saira Condensed, Saira, IBM Plex Mono) se cargan en `index.html`.
+
+## El catálogo virtual
+
+- **La revista** (`FlipBook`) usa [StPageFlip](https://github.com/Nodlik/StPageFlip) (`page-flip`) para el giro de hoja: se arrastra la esquina, se desliza con el dedo y en pantallas angostas cae a una sola página. Se monta dos veces con el mismo componente — dentro de la landing y a pantalla completa en `/revista/`.
+- **Las hojas** (`BookLeaf`) salen de `products.ts`: no hay nada que mantener aparte. Un producto nuevo entra solo en su sección, y el índice y los folios se recalculan.
+- **El papel es claro a propósito**: las sombras del pliegue solo se leen sobre una hoja clara, y son ellas las que hacen que el giro parezca de verdad.
+- **El tamaño del texto de las hojas va en `cqw`** (container queries), porque el widget redimensiona la página en píxeles según la pantalla.
 
 ## Notas de diseño
 

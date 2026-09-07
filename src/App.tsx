@@ -3,6 +3,7 @@ import Hero from './components/Hero';
 import Featured from './components/Featured';
 import Stats from './components/Stats';
 import Catalog from './components/Catalog';
+import CatalogBook from './components/CatalogBook';
 import Brands from './components/Brands';
 import Local from './components/Local';
 import ContactBanner from './components/ContactBanner';
@@ -29,6 +30,7 @@ export default function App() {
         <Stats />
         <Brands />
 
+        <CatalogBook />
         <Catalog />
         <Local />
         <ContactBanner />

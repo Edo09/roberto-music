@@ -14,6 +14,7 @@ export default function Header() {
         <span className="brandmark__sub">{site.tagline}</span>
       </div>
       <nav className="nav">
+        <a href="#revista">Revista</a>
         <a href="#catalogo">Catálogo</a>
         <a href="#marcas">Marcas</a>
         <a href="#local">Local</a>

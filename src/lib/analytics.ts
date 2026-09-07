@@ -12,7 +12,9 @@ export type TrackEvent =
   | 'maps_click'
   | 'flyer_open'
   | 'filter_change'
-  | 'search';
+  | 'search'
+  | 'book_flip'
+  | 'book_share';
 
 type Params = Record<string, string | number | boolean | undefined>;
 
