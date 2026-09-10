@@ -135,6 +135,11 @@ html[data-scrolled="true"] .brandmark__sub { max-height: 0; margin-top: 0; opaci
   transition: transform var(--dur-hover) var(--ease-out);
 }
 .nav a:hover::after, .nav a:focus-visible::after { transform: scaleX(1); }
+/* El enlace de la sección que se está mirando queda subrayado. No añade nada
+   nuevo a la pantalla: reutiliza el mismo subrayado del hover para decir dónde
+   estás en una página que es muy larga. */
+.nav a[data-active="true"] { color: var(--accent-light); }
+.nav a[data-active="true"]::after { transform: scaleX(1); }
 
 /* --- Botones, chips e iconos ------------------------------------------- */
 
@@ -319,6 +324,12 @@ html[data-modal] .fabs { opacity: 0; visibility: hidden; transform: translate3d(
 
 .search { transition: border-color var(--dur-hover) var(--ease-out), background-color var(--dur-hover) var(--ease-out); }
 .search:focus-within { border-color: var(--accent-light); background: rgba(242, 245, 250, 0.06); }
+/* La lupa se enciende con el foco: el cursor ya está dentro, pero el campo no
+   lo decía más que con el borde. */
+.search > svg { transition: color var(--dur-hover) var(--ease-out), transform var(--dur-hover) var(--ease-out); }
+.search:focus-within > svg { color: var(--accent-light); transform: scale(1.08); }
+/* La equis aparece al escribir: que entre, no que se materialice. */
+.search__clear { animation: rm-fade 160ms var(--ease-out) both; }
 .search__clear { transition: color var(--dur-hover) var(--ease-out), transform var(--dur-hover) var(--ease-out); }
 .search__clear:hover { color: var(--ink); transform: scale(1.15); }
 .catalog__status { transition: color var(--dur-hover) var(--ease-out); }
@@ -335,6 +346,88 @@ html[data-modal] .fabs { opacity: 0; visibility: hidden; transform: translate3d(
 .lightbox__nav--prev:hover { transform: translateY(-50%) translateX(-3px); }
 .lightbox__nav--next:hover { transform: translateY(-50%) translateX(3px); }
 .lightbox__nav:active { transform: translateY(-50%) scale(0.94); transition-duration: var(--dur-press); }
+
+
+/* --- Catálogo virtual: el libro ------------------------------------------- */
+
+/* El libro entra cuando el widget ya midió y colocó las hojas: sin esto
+   aparece de golpe y a medio armar. Va como animación sobre el estado listo, y
+   no escondiendo la caja de antemano, para que un fallo al inicializar deje el
+   libro visible en vez de dejar la sección en blanco. */
+.book--ready .book__host { animation: rm-fade var(--dur-panel) var(--ease-out) both; }
+
+/* Flechas de la barra: el mismo gesto que las del lightbox, cada una se
+   inclina hacia donde lleva. */
+.book__nav {
+  transition: background-color var(--dur-hover) var(--ease-out), border-color var(--dur-hover) var(--ease-out),
+    color var(--dur-hover) var(--ease-out), opacity var(--dur-hover) var(--ease-out),
+    transform var(--dur-hover) var(--ease-out);
+}
+.book__nav--prev:hover:not(:disabled) { transform: translateX(-3px); }
+.book__nav--next:hover:not(:disabled) { transform: translateX(3px); }
+.book__nav:active:not(:disabled) { transform: scale(0.94); transition-duration: var(--dur-press); }
+
+/* El contador cambia de texto en cada hoja; se remonta con `key`, así que el
+   cambio se ve como un relevo y no como un parpadeo. */
+.book__count { animation: rm-fade 220ms var(--ease-out) both; }
+
+/* Tarjetas de la rejilla: se mueve la foto dentro del marco, no la tarjeta.
+   Las hojas están medidas al milímetro y desplazarlas abriría huecos. */
+.gcard__frame { transition: box-shadow var(--dur-hover) var(--ease-out); }
+.gcard__btn:hover .gcard__frame { box-shadow: inset 0 0 0 2px var(--accent); }
+.gcard__btn:hover .media { transform: scale(1.05); }
+.gcard__btn:active .media { transform: scale(1.01); transition-duration: var(--dur-press); }
+.gcard__name { transition: color var(--dur-hover) var(--ease-out); }
+.gcard__zoom {
+  transition: background-color var(--dur-hover) var(--ease-out), color var(--dur-hover) var(--ease-out),
+    transform var(--dur-hover) var(--ease-out);
+}
+.gcard__btn:hover .gcard__zoom { transform: scale(1.12); }
+
+/* Hoja de un solo equipo: mismo gesto que la ficha del catálogo. */
+.leaf__figure { transition: box-shadow var(--dur-hover) var(--ease-out); }
+.leaf__figure:hover { box-shadow: inset 0 0 0 2px var(--accent); }
+.leaf__figure:hover .media { transform: scale(1.04); }
+.leaf__figure:active .media { transform: scale(1.01); transition-duration: var(--dur-press); }
+.leaf__zoom {
+  transition: background-color var(--dur-hover) var(--ease-out), color var(--dur-hover) var(--ease-out),
+    padding-right var(--dur-hover) var(--ease-out);
+}
+.leaf__figure:hover .leaf__zoom { padding-right: 3.4cqw; }
+.leaf__quote {
+  transition: background-color var(--dur-hover) var(--ease-out), transform var(--dur-hover) var(--ease-out);
+}
+.leaf__quote:hover { transform: translateY(-1px); }
+.leaf__quote:active { transform: none; transition-duration: var(--dur-press); }
+
+/* Índice y contratapa: las filas se corren un pelo, como las del contacto. */
+.toc__row {
+  transition: color var(--dur-hover) var(--ease-out), padding-left var(--dur-hover) var(--ease-out),
+    border-color var(--dur-hover) var(--ease-out);
+}
+.toc__row:hover { padding-left: 1.4cqw; border-color: var(--accent-700); }
+.toc__page { transition: transform var(--dur-hover) var(--ease-out); }
+.toc__row:hover .toc__page { transform: translateX(2px); }
+
+.backlist a {
+  transition: color var(--dur-hover) var(--ease-out), padding-left var(--dur-hover) var(--ease-out),
+    border-color var(--dur-hover) var(--ease-out);
+}
+.backlist a:hover { padding-left: 1.4cqw; border-color: var(--accent-light); }
+.backlist svg { transition: transform var(--dur-hover) var(--ease-out); }
+.backlist a:hover svg { transform: scale(1.12); }
+
+/* --- Catálogo virtual: el lector a pantalla completa ---------------------- */
+
+.reader__brand { transition: color var(--dur-hover) var(--ease-out); }
+.reader__act {
+  transition: background-color var(--dur-hover) var(--ease-out), border-color var(--dur-hover) var(--ease-out),
+    color var(--dur-hover) var(--ease-out), transform var(--dur-hover) var(--ease-out);
+}
+.reader__act:hover { transform: translateY(-2px); }
+.reader__act:active { transform: translateY(0) scale(0.94); transition-duration: var(--dur-press); }
+.reader__act svg { transition: transform var(--dur-hover) var(--ease-out); }
+.reader__act--icon:hover svg { transform: scale(1.12); }
 
 /* --- Foco ------------------------------------------------------------------ */
 

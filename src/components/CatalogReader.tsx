@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { READER_SHARE, site, waLink } from '../config';
 import { FlyerProvider } from './FlyerProvider';
-import FlipBook, { type FlipBookApi } from './FlipBook';
+import { ReaderFlipBook, type FlipBookApi } from './FlipBook';
 import useOutboundTracking from '../hooks/useOutboundTracking';
 import { ShareIcon, WhatsAppIcon } from './icons';
 import { track } from '../lib/analytics';
@@ -54,6 +54,12 @@ export default function CatalogReader() {
     <FlyerProvider>
       <div className="reader" data-track-context="revista">
         <header className="reader__top">
+          {/* El título de la página: la maqueta no tiene sitio para un titular,
+              pero buscadores y lectores de pantalla necesitan uno. */}
+          <h1 className="sr-only">
+            Catálogo de Roberto Music · iluminación, sonido y efectos para tarima,
+            discoteca y evento en Santo Domingo
+          </h1>
           <a className="reader__brand" href="/">
             <span className="reader__name">Roberto Music</span>
             <span className="reader__sub">Catálogo · {site.tagline}</span>
@@ -70,7 +76,7 @@ export default function CatalogReader() {
 
           <button type="button" className="reader__act reader__act--icon" onClick={share}>
             <ShareIcon />
-            <span className="reader__sr">Compartir el catálogo</span>
+            <span className="sr-only">Compartir el catálogo</span>
           </button>
 
           <a
@@ -80,11 +86,13 @@ export default function CatalogReader() {
             rel="noopener noreferrer"
           >
             <WhatsAppIcon size={17} />
-            <span className="reader__sr">Escribir por WhatsApp</span>
+            <span className="sr-only">Escribir por WhatsApp</span>
           </a>
         </header>
 
-        <FlipBook fill apiRef={book} />
+        <main className="reader__stage">
+          <ReaderFlipBook apiRef={book} />
+        </main>
 
         <p className={'reader__toast' + (toast ? ' reader__toast--on' : '')} role="status">
           {toast}

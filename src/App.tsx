@@ -22,18 +22,25 @@ export default function App() {
   return (
     <FlyerProvider>
       <div className="page">
+        {/* Primer tabulador de la página: quien navega con teclado no tiene que
+            recorrer el nav y las redes en cada visita. */}
+        <a className="skip" href="#contenido">
+          Saltar al contenido
+        </a>
         <Header />
-        <section className="band">
-          <Hero />
-          <Featured />
-        </section>
-        <Stats />
-        <Brands />
+        <main id="contenido">
+          <section className="band">
+            <Hero />
+            <Featured />
+          </section>
+          <Stats />
+          <Brands />
 
-        <CatalogBook />
-        <Catalog />
-        <Local />
-        <ContactBanner />
+          <CatalogBook />
+          <Catalog />
+          <Local />
+          <ContactBanner />
+        </main>
         <Footer />
         <FloatingActions />
       </div>

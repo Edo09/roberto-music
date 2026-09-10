@@ -73,21 +73,21 @@
 /* Modo lector (revista/index.html): el libro ocupa lo que quede entre la barra
    de arriba y los controles de abajo. Con `autoSize: false` el widget deja de
    fijarse el alto solo —lo pone este CSS— y él recorta la hoja para que quepa. */
-.book--fill {
+.book--reader {
   flex: 1;
   min-height: 0;
   align-items: center;
   padding: 14px 12px 8px;
   border-top: 0;
 }
-.book--fill .book__host {
+.book--reader .book__host {
   align-self: stretch;
   height: 100%;
   min-height: 0;
   max-width: 1300px;
 }
-.book--fill .book__block,
-.book--fill .stf__wrapper { height: 100%; }
+.book--reader .book__block,
+.book--reader .stf__wrapper { height: 100%; }
 
 /* --- Barra de control ----------------------------------------------------- */
 
@@ -129,6 +129,10 @@
   transform-origin: left center;
   transition: transform var(--dur-panel, 260ms) var(--ease-out, ease);
 }
+
+/* Mientras llega el chunk del libro, la barra reserva su alto exacto
+   (3px de progreso + 46px de botones + los espacios) para que no haya salto. */
+.book__bar--waiting { min-height: 105px; }
 
 /* En el lector la barra va pegada al borde inferior de la pantalla. */
 .reader .book__bar { padding: 10px 14px 12px; }

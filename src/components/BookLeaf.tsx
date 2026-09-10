@@ -12,6 +12,9 @@ interface Props {
 
 const CATEGORY_LABEL = new Map(categories.map((c) => [c.key, c.label]));
 
+/** 18298987798 → (829) 898-7798. Fuera del render: no hay por qué recompilarla. */
+const PHONE = /^1(\d{3})(\d{3})(\d{4})$/;
+
 /**
  * Una hoja del catálogo virtual. El elemento raíz es el que StPageFlip toma
  * como página (le añade `.stf__item` y le fija tamaño y transform), así que
@@ -123,7 +126,7 @@ export default function BookLeaf({ page, index }: Props) {
             <a href={waLink()} target="_blank" rel="noopener noreferrer">
               <WhatsAppIcon size={16} />
               <span>
-                <strong>{site.whatsappPrimary.replace(/^1(\d{3})(\d{3})(\d{4})$/, '($1) $2-$3')}</strong>
+                <strong>{site.whatsappPrimary.replace(PHONE, '($1) $2-$3')}</strong>
                 <small>WhatsApp · ventas</small>
               </span>
             </a>

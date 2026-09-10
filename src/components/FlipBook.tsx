@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -23,8 +24,10 @@ const SHAPE = {
   /* La hoja del lector es un poco más alta: la pantalla de un teléfono lo es, y
      con la proporción de la landing sobraba un dedo de fondo arriba y abajo.
      El diseño de la hoja aguanta el cambio porque se mide en % y cqw. */
-  fill: { width: 430, height: 660, minWidth: 200, maxWidth: 900, minHeight: 200, maxHeight: 1600 },
+  reader: { width: 430, height: 660, minWidth: 200, maxWidth: 900, minHeight: 200, maxHeight: 1600 },
 };
+
+type Layout = keyof typeof SHAPE;
 
 const productById = new Map(products.map((p) => [p.id, p]));
 
@@ -35,12 +38,16 @@ export interface FlipBookApi {
   step: (delta: number) => void;
 }
 
-interface Props {
-  /** El libro llena la caja que le den (lector a pantalla completa) en vez de
-      medirse por el ancho disponible. */
-  fill?: boolean;
+export interface FlipBookProps {
   /** Para que quien lo monta pueda saltar de página: chips, índice, teclado. */
   apiRef?: MutableRefObject<FlipBookApi | null>;
+  /** Hojas a la vista —una en móvil, dos en el pliego—, para que fuera se pueda
+      señalar por dónde va la lectura. */
+  onPage?: (pages: number[]) => void;
+}
+
+interface EngineProps extends FlipBookProps {
+  layout: Layout;
 }
 
 /**
@@ -54,7 +61,9 @@ interface Props {
  * de destruirla, porque su `destroy()` borra del documento todo lo que tenga
  * dentro y React se quedaría con nodos fantasma.
  */
-export default function FlipBook({ fill = false, apiRef }: Props) {
+function FlipBook({ layout, apiRef, onPage }: EngineProps) {
+  const reader = layout === 'reader';
+
   const hostRef = useRef<HTMLDivElement>(null);
   const sourceRef = useRef<HTMLDivElement>(null);
   const flipRef = useRef<PageFlip | null>(null);
@@ -82,17 +91,17 @@ export default function FlipBook({ fill = false, apiRef }: Props) {
     host.appendChild(block);
 
     const flip = new PageFlip(block, {
-      ...(fill ? SHAPE.fill : SHAPE.band),
+      ...SHAPE[layout],
       size: 'stretch',
       showCover: true,
       usePortrait: true,
       /* Con `autoSize` el widget se fija él mismo el alto a partir del ancho.
          En el lector eso sobra: la hoja tiene que caber en la pantalla, así que
          el alto lo pone el CSS y él se acomoda. */
-      autoSize: !fill,
+      autoSize: !reader,
       /* A pantalla completa no hay nada que desplazar hacia abajo, y sin esa
          concesión el dedo arrastra la hoja desde el primer píxel. */
-      mobileScrollSupport: !fill,
+      mobileScrollSupport: !reader,
       maxShadowOpacity: 0.5,
       flippingTime: still ? 1 : 700,
       swipeDistance: 30,
@@ -135,7 +144,7 @@ export default function FlipBook({ fill = false, apiRef }: Props) {
       for (const leaf of leaves) source.appendChild(leaf);
       flip.destroy();
     };
-  }, [fill]);
+  }, [layout, reader]);
 
   /* Saltar de sección. StPageFlip anima el salto colocándose una hoja antes y
      pasando página; en una sola página (móvil) esa animación a veces no arranca
@@ -188,19 +197,39 @@ export default function FlipBook({ fill = false, apiRef }: Props) {
     };
   }, [apiRef, jump, step]);
 
+  useEffect(() => {
+    /* En el pliego se ven dos hojas; la portada y la contratapa van solas. */
+    const spread = portrait || page === 0 || page >= total - 1 ? [page] : [page, page + 1];
+    onPage?.(spread);
+  }, [page, portrait, total, onPage]);
+
   const onKeyDown = (e: ReactKeyboardEvent) => {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
     e.preventDefault();
     step(e.key === 'ArrowRight' ? 1 : -1);
   };
 
+  /* Las hojas no cambian nunca: se arman una vez y así pasar página no obliga a
+     React a recorrer las 18 otra vez. */
+  const leaves = useMemo(
+    () => bookPages.map((leaf, i) => <BookLeaf key={i} page={leaf} index={i} />),
+    [],
+  );
+
   const first = page === 0;
   const last = page >= total - 1;
+  const label = first
+    ? 'Portada'
+    : last
+      ? 'Contraportada'
+      : portrait
+        ? `Hoja ${page} de ${total - 2}`
+        : `Hojas ${page}–${Math.min(page + 1, total - 2)} de ${total - 2}`;
 
   return (
     <>
       <div
-        className={'book' + (fill ? ' book--fill' : '') + (ready ? ' book--ready' : '')}
+        className={'book' + (reader ? ' book--reader' : '') + (ready ? ' book--ready' : '')}
         role="group"
         aria-label="Catálogo virtual de Roberto Music"
         tabIndex={0}
@@ -211,9 +240,7 @@ export default function FlipBook({ fill = false, apiRef }: Props) {
         {/* React monta aquí las hojas y sigue siendo su dueño; StPageFlip solo
             se las lleva prestadas al inicializarse. */}
         <div className="book__source" ref={sourceRef} hidden>
-          {bookPages.map((leaf, i) => (
-            <BookLeaf key={i} page={leaf} index={i} />
-          ))}
+          {leaves}
         </div>
       </div>
 
@@ -232,14 +259,8 @@ export default function FlipBook({ fill = false, apiRef }: Props) {
           <ChevronIcon size={22} />
         </button>
 
-        <span className="book__count" role="status" aria-live="polite">
-          {first
-            ? 'Portada'
-            : last
-              ? 'Contraportada'
-              : portrait
-                ? `Hoja ${page} de ${total - 2}`
-                : `Hojas ${page}–${Math.min(page + 1, total - 2)} de ${total - 2}`}
+        <span className="book__count" key={label} role="status" aria-live="polite">
+          {label}
         </span>
 
         <button
@@ -254,4 +275,20 @@ export default function FlipBook({ fill = false, apiRef }: Props) {
       </div>
     </>
   );
+}
+
+/**
+ * El libro dentro de la landing: se mide por el ancho de la sección y deja que
+ * la página siga desplazándose con el dedo por encima de él.
+ */
+export function BandFlipBook(props: FlipBookProps) {
+  return <FlipBook layout="band" {...props} />;
+}
+
+/**
+ * El libro del lector a pantalla completa: llena la caja que le den y el dedo
+ * arrastra la hoja desde el primer píxel, porque ahí no hay nada que desplazar.
+ */
+export function ReaderFlipBook(props: FlipBookProps) {
+  return <FlipBook layout="reader" {...props} />;
 }
