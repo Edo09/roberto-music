@@ -39,5 +39,4 @@ export const SIZES = {
   card: '(max-width: 700px) 100vw, 320px',
   featured: '(max-width: 700px) 100vw, 240px',
   brand: '132px',
-  banner: '100vw',
 } as const;

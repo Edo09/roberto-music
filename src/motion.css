@@ -56,18 +56,13 @@ html { scroll-padding-top: calc(var(--header-h) + 20px); }
 }
 .js-reveal [data-reveal-grid].is-in > * { opacity: 1; transform: none; }
 
-/* Las rejillas de hairline pintan sus líneas con el fondo del contenedor. Si
-   las fichas se desvanecen sobre él se ve un bloque gris; así que la línea
-   entra junto con las fichas y la rejilla parece armarse sola. */
+/* El marco de la rejilla entra junto con las fichas —que traen sus propias
+   líneas— para que parezca armarse sola en vez de aparecer vacía y llenarse. */
 .js-reveal [data-reveal-grid="hairline"] {
-  background-color: transparent;
   border-color: transparent;
-  transition: background-color 520ms var(--ease-out) 140ms, border-color 520ms var(--ease-out) 140ms;
+  transition: border-color 520ms var(--ease-out) 140ms;
 }
-.js-reveal [data-reveal-grid="hairline"].is-in {
-  background-color: var(--rule);
-  border-color: var(--rule);
-}
+.js-reveal [data-reveal-grid="hairline"].is-in { border-color: var(--rule); }
 
 /* El hero ya está en pantalla al cargar: entra con CSS puro, sin depender
    del observer, para que nunca se quede escondido si el JS tarda. */
@@ -174,6 +169,11 @@ html[data-scrolled="true"] .brandmark__sub { max-height: 0; margin-top: 0; opaci
 .social-icon:active { transform: translateY(0) scale(0.94); transition-duration: var(--dur-press); }
 
 /* --- Fichas de producto y destacados ----------------------------------- */
+
+/* Las que llegan al pulsar "cargar más" entran con un fundido: sin él, veinte
+   fichas aparecen de golpe y no queda claro qué se agregó. Las que ya estaban
+   no se tocan. */
+.card[data-new] { animation: rm-fade 320ms var(--ease-out) both; }
 
 /* Nada de transform en las fichas: viven en rejillas de hairline y moverlas
    abriría huecos en las líneas. Se mueve la imagen dentro de su marco. */

@@ -8,14 +8,16 @@ interface Props {
   product: Product;
   index: number;
   sizes: string;
+  /** Llegó con el último "cargar más": entra con un fundido en vez de aparecer. */
+  isNew?: boolean;
   onOpen: () => void;
 }
 
-export default function ProductCard({ product, index, sizes, onOpen }: Props) {
+export default function ProductCard({ product, index, sizes, isNew, onOpen }: Props) {
   const stock = product.stock ?? DEFAULT_STOCK;
 
   return (
-    <article className="card" style={{ '--i': index } as CSSProperties}>
+    <article className="card" data-new={isNew || undefined} style={{ '--i': index } as CSSProperties}>
       <button
         type="button"
         className="card__imgbtn"

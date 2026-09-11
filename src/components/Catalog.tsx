@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import {
   categories,
   normalize,
@@ -9,15 +9,26 @@ import {
 } from '../data/products';
 import ProductCard from './ProductCard';
 import { useFlyer } from './FlyerProvider';
-import { CloseIcon, SearchIcon } from './icons';
+import { ArrowDownIcon, CloseIcon, SearchIcon } from './icons';
 import { track } from '../lib/analytics';
 import { SIZES } from '../lib/images';
 
 type Filter = Category | 'todos';
+/** 'todos' deja la rejilla completa, como estaba antes de paginar. */
+type PageSize = 20 | 25 | 'todos';
+
+const PAGE_SIZES: PageSize[] = [20, 25, 'todos'];
+const DEFAULT_SIZE: PageSize = 20;
 
 export default function Catalog() {
   const [filter, setFilter] = useState<Filter>('todos');
   const [query, setQuery] = useState('');
+  const [perPage, setPerPage] = useState<PageSize>(DEFAULT_SIZE);
+  const [blocks, setBlocks] = useState(1);
+  const statusRef = useRef<HTMLParagraphElement>(null);
+  /* Cuántas fichas había antes del último "cargar más": las de más allá entran
+     con un fundido para que se vea qué llegó. */
+  const grown = useRef(0);
   const { open } = useFlyer();
 
   const q = normalize(query.trim());
@@ -43,6 +54,14 @@ export default function Catalog() {
     [matches, filter],
   );
 
+  /* El contador de bloques se reinicia en los propios manejadores (ver
+     `selectFilter` y compañía); aquí solo se recorta contra lo que hay, por si
+     la lista encogió por otro camino. */
+  const size = perPage === 'todos' ? shown.length : perPage;
+  const visible = shown.slice(0, Math.min(shown.length, size * blocks));
+  const left = shown.length - visible.length;
+  const nextBatch = Math.min(size, left);
+
   /* Solo registramos la búsqueda cuando el usuario deja de escribir. */
   useEffect(() => {
     if (!q) return;
@@ -50,9 +69,28 @@ export default function Catalog() {
     return () => window.clearTimeout(id);
   }, [q, matches.length]);
 
+  const reset = () => {
+    setBlocks(1);
+    grown.current = 0;
+  };
+
   const selectFilter = (key: Filter, label: string) => {
     setFilter(key);
+    reset();
     track('filter_change', { filter: label });
+  };
+
+  const search = (value: string) => {
+    setQuery(value);
+    reset();
+  };
+
+  const loadMore = () => {
+    grown.current = visible.length;
+    setBlocks((n) => n + 1);
+    /* Si esta tanda es la última, el botón desaparece y el foco se caería al
+       cuerpo de la página: lo mandamos al contador, que sí dice qué pasó. */
+    if (left <= size) statusRef.current?.focus();
   };
 
   return (
@@ -77,14 +115,14 @@ export default function Catalog() {
             placeholder="Buscar por nombre, marca o especificación…"
             aria-label="Buscar en el catálogo"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => search(e.target.value)}
           />
           {query && (
             <button
               type="button"
               className="search__clear"
               aria-label="Borrar búsqueda"
-              onClick={() => setQuery('')}
+              onClick={() => search('')}
             >
               <CloseIcon size={14} />
             </button>
@@ -108,11 +146,36 @@ export default function Catalog() {
         </div>
       </div>
 
-      <p className="catalog__status" role="status" aria-live="polite">
-        {shown.length === 0
-          ? 'Ningún equipo coincide con la búsqueda.'
-          : `${shown.length} ${shown.length === 1 ? 'equipo' : 'equipos'}`}
-      </p>
+      <div className="catalog__count">
+        <p className="catalog__status" role="status" aria-live="polite" tabIndex={-1} ref={statusRef}>
+          {shown.length === 0
+            ? 'Ningún equipo coincide con la búsqueda.'
+            : left === 0
+              ? `${shown.length} ${shown.length === 1 ? 'equipo' : 'equipos'}`
+              : `${shown.length} equipos · viendo ${visible.length}`}
+        </p>
+
+        {shown.length > 0 && (
+          <label className="perpage">
+            <span className="perpage__label">Ver</span>
+            <select
+              className="perpage__select"
+              value={String(perPage)}
+              onChange={(e) => {
+                const value = e.target.value;
+                setPerPage(value === 'todos' ? 'todos' : (Number(value) as PageSize));
+                reset();
+              }}
+            >
+              {PAGE_SIZES.map((option) => (
+                <option key={option} value={String(option)}>
+                  {option === 'todos' ? 'Todos' : `${option} a la vez`}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+      </div>
 
       {shown.length === 0 ? (
         <div className="empty">
@@ -124,7 +187,7 @@ export default function Catalog() {
             type="button"
             className="btn btn--ghost btn--sm"
             onClick={() => {
-              setQuery('');
+              search('');
               setFilter('todos');
             }}
           >
@@ -133,20 +196,32 @@ export default function Catalog() {
         </div>
       ) : (
         /* La `key` remonta la grilla al cambiar de categoría, así las fichas
-           vuelven a entrar escalonadas. Al escribir no se remonta: reanimar
-           en cada tecla sería molesto. */
+           vuelven a entrar escalonadas. Al escribir o al cargar más no se
+           remonta: reanimar lo que ya estaba leído sería molesto. */
         <div className="grid" key={filter} data-reveal-grid="hairline">
-          {shown.map((p, i) => (
+          {visible.map((p, i) => (
             <ProductCard
               key={p.id}
               product={p}
               index={i}
               sizes={SIZES.card}
+              isNew={i >= grown.current && grown.current > 0}
               onOpen={() => open(p, shown)}
             />
           ))}
         </div>
       )}
+
+      {left > 0 && (
+        <div className="loadmore">
+          <button type="button" className="btn btn--ghost" onClick={loadMore}>
+            <ArrowDownIcon size={16} />
+            Cargar {nextBatch} más
+          </button>
+          <span className="loadmore__left">Quedan {left}</span>
+        </div>
+      )}
+
     </section>
   );
 }

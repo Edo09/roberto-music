@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { featured } from '../data/products';
 import Media from './Media';
 import { useFlyer } from './FlyerProvider';
+import { site } from '../config';
 import { SIZES } from '../lib/images';
 
 const META: Record<string, string> = {
@@ -16,13 +17,25 @@ export default function Featured() {
 
   return (
     <div className="logoband">
-      <Media
-        className="logoband__logo"
-        src="/assets/logo-roberto-music.jpeg"
-        alt="Roberto Music — Lighting &amp; Sound"
-        sizes={SIZES.banner}
-        full
-      />
+      {/* Antes aquí iba la foto del banner del local: un JPEG con los teléfonos
+          incrustados, borroso en pantallas grandes y mudo para buscadores y
+          lectores. La marca ahora se compone con la tipografía del sitio sobre
+          los mismos haces de luz del hero. */}
+      <div className="brandplate" data-reveal>
+        {/* El mismo bloque del banner del local: el escudo RM y el nombre en
+            script, azul con filo dorado. Todo tipografía y CSS — el monograma
+            va marcado como decorativo porque el nombre ya está escrito al lado. */}
+        <p className="brandplate__lockup">
+          {/* `data-text` lo repite la capa dorada de detrás (ver styles.css). */}
+          <span className="brandplate__mark metal" data-text="RM" aria-hidden="true">
+            RM
+          </span>
+          <span className="brandplate__script metal" data-text="Roberto Music">
+            Roberto Music
+          </span>
+        </p>
+        <span className="brandplate__kicker">{site.tagline}</span>
+      </div>
       <span className="kicker featured__label" data-reveal>
         Lo más vendido
       </span>

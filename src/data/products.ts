@@ -6,6 +6,7 @@ export type Category =
   | 'humo'
   | 'bocinas'
   | 'consolas'
+  | 'pantallas'
   | 'soportes';
 
 export const categories: { key: Category; label: string }[] = [
@@ -16,7 +17,10 @@ export const categories: { key: Category; label: string }[] = [
   { key: 'humo', label: 'Humo y efectos' },
   { key: 'bocinas', label: 'Bocinas y amplificación' },
   { key: 'consolas', label: 'Consolas y mezcladoras' },
-  { key: 'soportes', label: 'Soportes y accesorios' },
+  { key: 'pantallas', label: 'Pantallas y video' },
+  /* Antes "Soportes y accesorios": con el inalámbrico dentro, el micrófono
+     manda en la etiqueta. */
+  { key: 'soportes', label: 'Micrófonos y soportes' },
 ];
 
 /**
@@ -77,6 +81,8 @@ export const products: Product[] = [
       specs:['Disparo de humo potente a mano','Correa para hombro incluida','Ideal para discotecas y eventos'] },
     { id:'supra16', name:'Consola Mixer Supra 16', brand:'Promax', cat:'consolas', featured:false, img:'/assets/consola-supra-16.jpeg',
       specs:['16 canales · 12 mono XLR/Jack + 2 estéreo','99 efectos DSP · EQ 3 bandas · phantom 48V','USB / Bluetooth / MP3 con display'] },
+    { id:'supra8', name:'Consola Mixer Supra 8', brand:'Promax', cat:'consolas', featured:false, img:'/assets/consola-supra-8-promax.jpeg',
+      specs:['8 canales MIC XLR + línea · EQ 3 bandas por canal','99 efectos DSP · Bluetooth / USB / MP3 con display','Phantom 48V · faders de 60mm · salida Master XLR'] },
     { id:'novop10a', name:'Blastking NOVO-P10A 10" Activa', brand:'Blastking', cat:'bocinas', featured:false, img:'/assets/blastking-novo-p10a.jpeg',
       specs:['800W Clase D bi-amp · SPL máximo 125 dB','DSP integrado 4 modos · Bluetooth TWS','Combo XLR / 1/4" · 11.24 kg'] },
     { id:'alebsw450', name:'ALED BSW 450 · Beam Spot Wash', brand:'Roberto Music', cat:'cabezas', featured:false, img:'/assets/aled-bsw-450.jpeg',
@@ -133,6 +139,12 @@ export const products: Product[] = [
       specs:['2048 parámetros en tiempo real','6 faders + 18 botones ejecutores','2 salidas DMX XLR 5-pin · grandMA2 onPC'] },
     { id:'minicommandwing', name:'Mini Command Wing Consola DMX', brand:'grandMA2', cat:'consolas', featured:false, img:'/assets/mini-command-wing-dmx.jpeg',
       specs:['2048 parámetros · backup 65,536','6 faders ejecutores + 4 encoder wheels','Compatible grandMA2 onPC · incluye bolso'] },
+    { id:'pantallap391', name:'Pantalla LED P3.91 The Pulse', brand:'Roberto Music', cat:'pantallas', featured:false, img:'/assets/pantalla-led-p391.jpeg',
+      specs:['Pitch 3.91mm · 3500–5000 nits · refresco 3840 Hz','Módulo 250×250 mm · cabinet 500×1000 mm · 110–220V','Ángulo 140° · 100,000 horas · incluye flight case'] },
+    { id:'totemlcd', name:'Tótem Publicitario LCD 43" 55" 65"', brand:'Roberto Music', cat:'pantallas', featured:false, img:'/assets/totem-publicitario-lcd.jpeg',
+      specs:['LCD 4K vertical · 500 nits · 43, 55 o 65 pulgadas','Android 11 · 2GB RAM · 16GB · WiFi, Ethernet, USB y HDMI','Parlantes integrados · control CMS desde celular o PC'] },
+    { id:'micst161', name:'Micrófono Inalámbrico ST-161', brand:'Roberto Music', cat:'soportes', featured:false, img:'/assets/microfono-inalambrico-st161.jpeg',
+      specs:['UHF 500–900 MHz · alcance de 50 metros','Batería recargable · display de frecuencia y carga','Receptor plug 6.3 mm con antena · función mute'] },
     { id:'pedestalvstar', name:'Pedestal para Micrófono V-STAR V-200', brand:'V-Star', cat:'soportes', featured:false, img:'/assets/pedestal-microfono-vstar-v200.jpeg',
       specs:['Altura 95–160 cm · brazo boom 54–84 cm','Acero al carbón + ABS · trípode 30 cm','Incluye 2 clips + adaptadores 3/8" y 5/8"'] },
 ];

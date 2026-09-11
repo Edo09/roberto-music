@@ -29,15 +29,17 @@ export default function BookLeaf({ page, index }: Props) {
       <div className="bookpage" data-density="hard">
         <div className="leaf leaf--cover">
           <span className="leaf__eyebrow">{site.tagline}</span>
-          <h3 className="leaf__brand">Roberto Music</h3>
-          <span className="leaf__cover-art">
-            <Media
-              src="/assets/logo-roberto-music.jpeg"
-              alt=""
-              sizes={SIZES.card}
-              aria-hidden="true"
-            />
-          </span>
+          {/* El mismo bloque de marca de la landing, a escala de hoja. */}
+          <h3 className="leaf__lockup">
+            <span className="leaf__mark metal" data-text="RM" aria-hidden="true">
+              RM
+            </span>
+            <span className="leaf__script metal" data-text="Roberto Music">
+              Roberto Music
+            </span>
+          </h3>
+          {/* Panel de haces: la portada se compone entera con tipografía y luz. */}
+          <span className="leaf__cover-art" aria-hidden="true" />
           <span className="leaf__title">Catálogo</span>
           <p className="leaf__lead">Iluminación · Sonido · Efectos para tarima y discoteca.</p>
           <span className="leaf__hint">Arrastra la esquina para abrir →</span>

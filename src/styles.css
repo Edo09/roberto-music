@@ -15,6 +15,30 @@
   --font-display: 'Saira Condensed', 'Saira', system-ui, sans-serif;
   --font-body: 'Saira', system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  /* La marca. Dos caras, como en el banner del local: gótica para el
+     monograma RM y script de pincel para el nombre. Ambas de un solo peso
+     (400), así que se usan siempre con font-weight 400 — pedirles negrita
+     daría una negrita sintética, que en estas letras se ve sucia. */
+  --font-mark: 'Pirata One', 'Saira Condensed', serif;
+  --font-script: 'Great Vibes', 'Saira Condensed', cursive;
+
+  /* Acabado de la marca. Estas cuatro variables mandan en el metal de la placa
+     y en la portada del catálogo: cambiarlas aquí las cambia en los dos sitios.
+     Ahora mismo: cromo azul apagado — mismo recorrido azul/claro/gris/azul/claro
+     que el cromo brillante, pero sin blancos puros, que sobre este fondo casi
+     negro hacían que la marca pesara más que el titular del hero.
+
+     Otras dos versiones probadas, listas para pegar:
+       · cromo brillante
+         --mark-edge: #eef3ff;  --mark-edge-deep: #7f8da9;  --mark-fill: #2f6bd8;
+         --mark-sheen: linear-gradient(176deg, #2f6bd8 0%, #fff 20%, #b9c3d6 42%, #2f6bd8 68%, #fff 100%);
+       · dorado
+         --mark-edge: #e2be6a;  --mark-edge-deep: #a8802f;  --mark-fill: #4a86ea;
+         --mark-sheen: linear-gradient(176deg, #fff 2%, #cfe0ff 26%, #5b91ee 58%, #1b4aa8 100%); */
+  --mark-edge: #b3c6e4;
+  --mark-edge-deep: #495772;
+  --mark-fill: #1f4f9e;
+  --mark-sheen: linear-gradient(176deg, #1b4691 0%, #bed3f0 18%, #7f92b0 40%, #16408c 66%, #a2bbdd 100%);
 }
 
 * { box-sizing: border-box; }
@@ -239,17 +263,120 @@ a:hover { color: #a7c4fa; }
 
 /* Logo banner + featured */
 .logoband { background: var(--panel); border-top: 2px solid var(--rule); }
-.logoband__logo { width: 100%; max-height: 360px; height: auto; object-fit: contain; display: block; border-bottom: 2px solid var(--rule); }
+
+/* Placa de marca. Sustituye a la foto del banner del local: mismos haces
+   diagonales y resplandores que la portada, pero la marca compuesta en Saira
+   Condensed. Nítida en cualquier pantalla, seleccionable y traducible. */
+.brandplate {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(10px, 1.6vw, 20px);
+  overflow: hidden;
+  padding: clamp(38px, 6vw, 70px) 28px clamp(34px, 5vw, 60px);
+  text-align: center;
+  border-bottom: 2px solid var(--rule);
+  background-color: #05070c;
+  background-image:
+    linear-gradient(104deg, transparent 17%, rgba(150, 190, 255, 0.16) 18.4%, transparent 20.2%),
+    linear-gradient(96deg, transparent 37%, rgba(255, 90, 160, 0.14) 38.2%, transparent 40.4%),
+    linear-gradient(72deg, transparent 61%, rgba(165, 125, 255, 0.13) 62.4%, transparent 65%),
+    linear-gradient(114deg, transparent 77%, rgba(150, 190, 255, 0.1) 78%, transparent 80.5%),
+    radial-gradient(88% 120% at 82% 0%, rgba(47, 107, 216, 0.34), transparent 62%),
+    radial-gradient(70% 110% at 6% 100%, rgba(216, 27, 106, 0.24), transparent 64%);
+}
+/* Escudo y nombre en una línea, como en el banner del local. */
+.brandplate__lockup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: clamp(10px, 1.8vw, 26px);
+  margin: 0;
+  min-width: 0;
+}
+.brandplate__mark {
+  font-family: var(--font-mark);
+  font-size: clamp(52px, 7.4vw, 96px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.03em;
+}
+.brandplate__script {
+  font-family: var(--font-script);
+  /* Great Vibes deja mucho aire dentro del em: necesita más cuerpo que una
+     tipografía normal para pesar lo mismo, y sitio para las floreadas. */
+  font-size: clamp(54px, 9.4vw, 124px);
+  line-height: 1.16;
+  padding-right: 0.06em;
+}
+
+/* El acabado metálico de la marca, en tres capas y sin una sola imagen:
+     1. el filo, con `paint-order: stroke` para que el trazo quede DEBAJO del
+        relleno y solo asome por fuera de la letra;
+     2. el relleno sólido, que es lo que tapa la mitad interior del trazo;
+     3. una copia en ::after con el degradado recortado contra el texto, encima,
+        que le da el brillo de arriba hacia abajo.
+   Se hace así y no con `z-index: -1` porque una capa negativa se iría detrás
+   del fondo de la placa y el filo desaparecería.
+   Quien lo use tiene que llevar `data-text` con el mismo texto. */
+.metal {
+  position: relative;
+  display: inline-block;
+  color: var(--mark-fill);
+  -webkit-text-stroke: 0.075em var(--mark-edge);
+  paint-order: stroke fill;
+  text-shadow: 0 0.03em 0.02em var(--mark-edge-deep), 0 0 0.5em rgba(47, 107, 216, 0.28);
+}
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+  .metal::after {
+    /* La barra y las comillas vacías son el texto alternativo del contenido
+       generado: sin eso, un lector de pantalla leería la marca dos veces. */
+    content: attr(data-text) / '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-image: var(--mark-sheen);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: 0;
+    text-shadow: none;
+  }
+}
+.brandplate__kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent-light);
+}
+@media (max-width: 700px) {
+  .brandplate { padding-left: 18px; padding-right: 18px; }
+  .brandplate__kicker { font-size: 10px; letter-spacing: 0.22em; }
+}
 .featured__label { display: block; margin: 26px 28px 0; }
+/* Mismo criterio que la rejilla del catálogo: la línea la pone cada ficha, así
+   la última fila incompleta —4 destacados en 3 columnas— no deja un bloque gris
+   donde faltan celdas. */
 .featured__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2px;
-  background: var(--rule);
   margin: 14px 28px 30px;
   border: 2px solid var(--rule);
+  border-right: 0;
+  border-bottom: 0;
 }
-.fcard { display: flex; flex-direction: column; background: var(--panel); color: var(--ink); }
+.fcard {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  color: var(--ink);
+  border-right: 2px solid var(--rule);
+  border-bottom: 2px solid var(--rule);
+}
 .fcard:hover { background: #0d1220; color: var(--ink); }
 .frame {
   display: block;
@@ -296,10 +423,27 @@ a:hover { color: #a7c4fa; }
 .chip:hover { border-color: var(--accent-light); }
 .chip--on { background: var(--accent); border-color: var(--accent); color: #fff; }
 .chip__count { opacity: 0.55; font-weight: 500; }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 2px; background: var(--rule); border: 2px solid var(--rule); }
+/* Las líneas de la rejilla las pinta cada ficha con su propio borde, no el
+   fondo del contenedor. Con el fondo, la última fila incompleta —43 equipos no
+   llenan nunca una rejilla de 6 columnas— se veía como un bloque gris del ancho
+   de las celdas que sobraban. Así el marco sigue a las fichas: arriba y a la
+   izquierda lo cierra el contenedor, a la derecha y abajo lo cierran ellas. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+  border: 2px solid var(--rule);
+  border-right: 0;
+  border-bottom: 0;
+}
 
 /* Product card */
-.card { display: flex; flex-direction: column; background: var(--bg); }
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  border-right: 2px solid var(--rule);
+  border-bottom: 2px solid var(--rule);
+}
 .card__imgbtn { position: relative; display: block; padding: 0; border: 0; cursor: zoom-in; width: 100%; }
 .card__imgbtn:hover { opacity: 0.88; }
 .card__flag {
@@ -373,8 +517,22 @@ a:hover { color: #a7c4fa; }
 .brandcard__sub { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.16em; color: var(--accent-light); }
 .brandcard__note { font-size: 13.5px; line-height: 1.5; color: var(--ink-70); }
 .brands__also { padding: 22px 28px 0; }
-.brands__row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 2px; background: var(--rule); margin-top: 18px; }
-.brands__cell { padding: 30px 22px; background: var(--bg); display: flex; align-items: center; }
+.brands__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  margin-top: 18px;
+  border: 2px solid var(--rule);
+  border-right: 0;
+  border-bottom: 0;
+}
+.brands__cell {
+  display: flex;
+  align-items: center;
+  padding: 30px 22px;
+  background: var(--bg);
+  border-right: 2px solid var(--rule);
+  border-bottom: 2px solid var(--rule);
+}
 .brands__cell span { font-family: var(--font-display); font-size: clamp(22px, 2.4vw, 32px); font-weight: 800; letter-spacing: 0.01em; text-transform: uppercase; }
 
 /* Local */
@@ -510,8 +668,61 @@ a:hover { color: #a7c4fa; }
   background: transparent;
   color: var(--ink-62);
 }
+/* Cuántos hay y cuántos se están viendo, con el selector al otro extremo. */
+.catalog__count {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  margin-bottom: 16px;
+}
+.perpage { display: inline-flex; align-items: center; gap: 10px; margin-left: auto; }
+.perpage__label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-62);
+}
+.perpage__select {
+  /* Que el desplegable del sistema salga oscuro y no en blanco. */
+  color-scheme: dark;
+  padding: 9px 10px;
+  border: 2px solid var(--rule);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+.perpage__select:hover { border-color: var(--accent-light); }
+
+/* Cargar más: el botón manda y a su lado, en voz baja, cuántos faltan. */
+.loadmore {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 16px;
+  padding: 28px 0 6px;
+  border-top: 2px solid var(--rule);
+  margin-top: 28px;
+}
+.loadmore .btn { min-width: 220px; justify-content: center; }
+.loadmore__left {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-62);
+}
+
 .catalog__status {
-  margin: 0 0 16px;
+  margin: 0;
   font-family: var(--font-mono);
   font-size: 10.5px;
   font-weight: 600;
@@ -554,8 +765,19 @@ a:hover { color: #a7c4fa; }
   color: var(--ink-62);
 }
 
-/* La ficha destacada pasó de <a> a <button> para abrir el flyer. */
-.fcard { width: 100%; padding: 0; border: 0; text-align: left; font: inherit; cursor: pointer; }
+/* La ficha destacada pasó de <a> a <button> para abrir el flyer. Ojo: este
+   bloque va después del que le pone las líneas de la rejilla, así que el reset
+   del borde del botón tiene que devolverlas o se las lleva por delante. */
+.fcard {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-right: 2px solid var(--rule);
+  border-bottom: 2px solid var(--rule);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
 
 /* --- Acciones flotantes ---------------------------------------------------- */
 
@@ -632,3 +854,4 @@ a:hover { color: #a7c4fa; }
   .lightbox__nav--next { right: 4px; }
   .empty { padding: 40px 0 32px; }
 }
+
